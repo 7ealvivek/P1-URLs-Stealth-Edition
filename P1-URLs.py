@@ -27,7 +27,7 @@ import json
 # ==============================================================================
 # === Config ===
 # ==============================================================================
-SLACK_WEBHOOK = "https://hooks.slack.com/services/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" 
+SLACK_WEBHOOK = "https://hooks.slack.com/services/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" 
 
 # File paths
 COMBINED_URLS_OUTPUT = "target_combined_urls.txt"
