@@ -33,8 +33,6 @@ P1 URLs is the culmination of an iterative development process, designed to chai
 - **Professional Presentation & Organization:**
   - Features a fully animated, custom startup banner.
   - Creates a unique, timestamped directory for each scan to store all logs, preventing data contamination.
- 
-
 
 ### RUN OVER VPS FOR MOST ACCURATE RESULTS
 
@@ -45,95 +43,90 @@ P1 URLs is the culmination of an iterative development process, designed to chai
 This tool is designed to run on a Linux-based environment (like Kali, Ubuntu, or a VPS).
 
 First, install the required Python libraries. If you encounter an `externally-managed-environment` error, the `--user` flag is the recommended quick fix.
+
 ```bash
 pip3 install rich requests
 ```
-
-
 # Web Crawler
-go install -v github.com/projectdiscovery/katana/cmd/katana@latest
+``go install -v github.com/projectdiscovery/katana/cmd/katana@latest``
 
 # URL Deduplicator
 pipx install uro
 
 # Pattern Matching Tool
-go install -v github.com/tomnomnom/gf@latest
+``go install -v github.com/tomnomnom/gf@latest``
 
 # Vulnerability Scanner
-go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+``go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest``
 
 
-### ⚙️ Configuration & Usage Initial Configuration
+## ⚙️ Configuration & Usage
+
+### Initial Configuration
 
 Before running, you must configure the tool:
 
-    Clone the Repository:
+1. **Clone the Repository**:
+```bash
+git clone [Your-GitHub-Repo-URL-Here]
+cd P1-URLs
+```
 
-          
-    git clone [Your-GitHub-Repo-URL-Here]
-    cd P1-URLs
+## ⚙️ Configuration & Usage
 
-
-    Make the Script Executable:
-
-      
+### Initial Setup
+1. **Make the Script Executable**:
+```bash
 chmod +x P1-URLs.py
+```
 
-    Configure Your Slack Webhook: This is critical for real-time alerts. Open P1-URLs.py and replace the placeholder URL in the SLACK_WEBHOOK variable with your own.
+## ⚙️ Scan Modes
 
-Running a Scan
+### 🔍 Standard Discovery Mode
 
-Standard Discovery Mode (Find and test URLs from a list of domains)
+Find and test URLs from a list of domains using Katana and built-in modules.
 
-      
-``./P1-URLs.py -l domains.txt``
+```bash
+./P1-URLs.py -l domains.txt
+```
 
+## Direct URL Testing Mode
 
-Direct URL Testing Mode (Test a pre-existing list of URLs)
+Test a pre-existing list of URLs directly for LFI/SQLi vulnerabilities.
 
-      
 ``./P1-URLs.py -l my_url_list.txt -u``
 
+### Custom LFI Payloads Mode
 
-Using Custom LFI Payloads
-To use your own LFI payloads instead of the built-in list, use the -p flag.
+Use your own list of LFI payloads instead of the built-in wordlist.
 
-      
-``./P1-URLs.py -l domains.txt -p /path/to/my_lfi_payloads.txt``
+``./P1-URLs.py -l domains.txt -p /path/to/custom_lfi_payloads.txt``
 
+### 🧠 Advanced: Out-of-Band (OOB) SQLi Testing
 
-### Enabling Out-of-Band (OOB) SQLi Testing
-This is the most powerful feature for finding "super blind" SQLi. Provide your collaborator URL (e.g., from Interactsh) using the -c flag.
+This is the most powerful detection mode for super-blind SQLi using OOB payloads.
 
-First, start your Interactsh client: interactsh-client
-Then, run the scan with your unique OOB URL:
+  🔁 Step 1: Start Interactsh/Burp Collab client
 
-      
+``interactsh-client/Burp Collab``
+
+  🚀 Step 2: Run the scan with your unique OOB URL
+
 ``./P1-URLs.py -l domains.txt -c your-unique-id.oast.online``
 
+💡 Note: Match interaction callback IDs with vulnerable targets by checking:
 
-Monitor your Interactsh client for callbacks. If you receive an interaction, search for its unique ID in the oob_requests.log file to find the vulnerable target.
-📁 Output
+``oob_requests.log``
 
-All results are saved into a unique, timestamped directory (e.g., scan_results_domains_2023-10-27_15-30-00/).
+### 📂 Output Structure
 
-    gf_results/: Categorized URLs for manual review.
+Results are saved inside a timestamped directory like:
+``scan_results_domains_2023-10-27_15-30-00/``
 
-    nuclei_results/: Raw JSONL output from Nuclei scans.
 
-    lfi_vulnerable.json: A log of confirmed LFI vulnerabilities.
 
-    blind_sqli_vulnerable.json: A log of confirmed time-based Blind SQLi vulnerabilities.
+### 🙏 Credits
 
-    nuclei_findings.json: A log of all vulnerabilities found by Nuclei.
+    Author: Vivek ( x.com/starkcharry ), ( bugcrowd.com/realvivek )
 
-    oob_requests.log: A critical log mapping every unique OOB ID to the URL and payload that was sent.
-
-### Credits
-
-    Author: Vivek (@starkcharry on X | bugcrowd.com/realvivek)
-
-    Core Toolchain: ProjectDiscovery (katana, nuclei), tomnomnom (gf), s0md3v (uro), and all their respective contributors.
-
-    Inspiration for Header-Based SQLi: ifconfig-me/SQLi-Scanner
-        
+    Core Tools: ProjectDiscovery, tomnomnom, s0md3v
