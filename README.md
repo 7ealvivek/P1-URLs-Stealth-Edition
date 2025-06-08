@@ -1,169 +1,169 @@
-# P1-URLs.py-Stealth-Edition
+# P1 URLs - v1.5.3 (Definitive Stable Edition)
 
-How to Use Your P1-URLs.py (Stealth Edition)
+<p align="center">
+  <img src="https://img.shields.io/badge/Made%20with-Python-blue.svg" alt="Made with Python">
+  <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Maintained">
+  <img src="https://img.shields.io/badge/Contributions-welcome-brightgreen.svg" alt="Contributions Welcome">
+</p>
 
-This is an advanced, automated vulnerability scanner designed to find high-impact security flaws. It intelligently chains together leading open-source tools with custom, evasive testing logic to maximize the discovery of critical vulnerabilities.
-Key Features
+<p align="center">
+  <i>An advanced, high-speed, and evasive automation framework for discovering high-impact web vulnerabilities.</i>
+</p>
 
-    Maximum Discovery: Uses both Katana (active crawl) and GAU (historical archives) to build the most comprehensive list of target URLs.
+This tool is the culmination of an iterative development process, designed to chain together leading security tools with custom, intelligent vulnerability testing modules. It automates the entire workflow from discovery to real-time alerting, focusing on speed, accuracy, and stealth.
 
-    Intelligent LFI Detection: Employs a Dynamic Differential Analysis technique, comparing page content to find LFI, making it more accurate and less prone to false positives than simple string matching.
+---
 
-    Evasive Blind SQLi Testing:
+## 🚀 Key Features
 
-        HTTP Parameter Pollution (HPP): Tests URL parameters using HPP to bypass common WAF rules.
+- **Blazing Fast URL Discovery:** Uses **Katana** in a high-concurrency bulk mode to crawl thousands of domains in minutes, not hours.
+- **Intelligent LFI Detection:** Employs a **Dynamic Differential Analysis** technique. Instead of simple string matching, it compares page content similarity to accurately detect LFI with a very low false-positive rate.
+- **Evasive Blind SQLi Engine:**
+  - **Dual-Vector Attack:** Tests both **URL Parameters** and **HTTP Headers** for SQLi.
+  - **HTTP Parameter Pollution (HPP):** Automatically uses HPP to bypass common WAF and security filter rules when testing parameters.
+  - **Randomized & Isolated Header Testing:** To evade detection, the script randomizes the order of HTTP methods and headers tested and injects payloads into only one header at a time, making requests appear more legitimate.
+  - **Database-Specific Payloads:** Uses a massive, curated list of advanced, time-based payloads for MySQL, PostgreSQL, MSSQL, and Oracle.
+- **Real-Time Slack Alerts:** Sends an **immediate, detailed notification to your Slack channel** the moment any vulnerability is confirmed, including LFI, SQLi, and all Nuclei findings.
+- **Flexible Workflow:**
+  - **Discovery Mode:** Provide a list of domains, and the script will discover and test all associated URLs.
+  - **Direct Test Mode:** Use the `-u` flag to provide a pre-existing list of URLs, skipping the discovery phase entirely.
+- **Customizable Payloads:** Comes with over 250 built-in, advanced LFI payloads, with an option to use your own custom payload file via the `-p` flag.
+- **Professional Presentation:** Features a fully animated startup banner and clear, color-coded console output.
+- **Organized Output:** Creates a unique, timestamped directory for each scan to store all logs and results, preventing data contamination between runs.
 
-        Randomized Header Testing: Tests multiple HTTP headers using randomized methods and header orders to evade pattern-based detection.
+---
 
-        Isolated Injection: Injects payloads into only one header at a time, making requests appear more legitimate.
+## 🛠️ Installation & Setup
 
-    Real-Time Alerts: Sends an immediate, detailed notification to Slack the moment any vulnerability is confirmed.
+This tool is designed to run on a Linux-based environment (like Kali, Ubuntu, or a VPS).
 
-    Flexible & Self-Contained: Comes with a massive, curated list of over 250 built-in LFI payloads, with an option to use your own custom list.
+### Step 1: Install Python Dependencies
 
-Setup & Installation (Prerequisites)
+The script requires `rich` for formatted output and `requests` for web requests.
 
-You only need to do this once.
+```bash
+pip3 install rich requests
 
-    Save the Script: Save the code above as P1-URLs.py.
 
-    Make it Executable: Open a terminal and run:
+    Note: If you encounter an externally-managed-environment error, use the --user flag:
+    pip3 install --user rich requests
 
-          
-    chmod +x P1-URLs.py
 
-        
 
-    IGNORE_WHEN_COPYING_START
+### Step 2: Install Go-based Tools
 
-Use code with caution. Bash
-IGNORE_WHEN_COPYING_END
-
-Install Python Libraries: The script requires requests and rich. If you encounter an externally-managed-environment error, use the --user flag.
+Ensure you have the latest version of Go installed. Then, install the required tools:
 
       
-pip3 install --user rich requests
+# Web Crawler
+go install -v github.com/projectdiscovery/katana/cmd/katana@latest
 
-    
+# URL Deduplicator
+pipx install uro  # Recommended method
+# Or via pip: pip3 install uro
 
-IGNORE_WHEN_COPYING_START
-Use code with caution. Bash
-IGNORE_WHEN_COPYING_END
+# Pattern Matching Tool
+go install -v github.com/tomnomnom/gf@latest
 
-Install Go-based Tools: This script relies on several Go tools. Ensure you have Go installed, then run:
-
-      
-go install github.com/projectdiscovery/katana/cmd/katana@latest
-go install github.com/lc/gau/v2/cmd/gau@latest
-go install github.com/s0md3v/uro@latest
-go install github.com/tomnomnom/gf@latest
+# Vulnerability Scanner
 go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
 
-    
 
-IGNORE_WHEN_COPYING_START
-Use code with caution. Bash
-IGNORE_WHEN_COPYING_END
 
-Ensure your Go binary path (~/go/bin) is in your system's PATH.
+Step 4: Clone and Configure This Script
 
-Set up GF Patterns:
+    Clone the Repository:
 
-      
-git clone https://github.com/tomnomnom/gf
-mkdir -p ~/.gf
-cp -r gf/examples/* ~/.gf
+          
+    git clone [Your-GitHub-Repo-URL]
+    cd P1-URLs
 
-    
 
-IGNORE_WHEN_COPYING_START
 
-    Use code with caution. Bash
-    IGNORE_WHEN_COPYING_END
-
-    Configure Your Slack Webhook: This is critical. Open P1-URLs.py and replace the placeholder SLACK_WEBHOOK URL with your actual Slack incoming webhook.
-
-Running the Scan
-
-    Prepare Input File: Create a text file (e.g., domains.txt) with your target root domains, one per line (e.g., https://example.com).
-
-    Execute the Script:
-
-        To use the powerful built-in LFI payloads:
-
-              
-        ./P1-URLs.py -l domains.txt
-
-            
-
-        IGNORE_WHEN_COPYING_START
-
-Use code with caution. Bash
-IGNORE_WHEN_COPYING_END
-
-To use your own custom LFI payloads:
+Make the Script Executable:
 
       
-./P1-URLs.py -l domains.txt -p path/to/my_lfi_payloads.txt
+chmod +x P1-URLs.py
+
+
+
+Configure Your Slack Webhook: This is the most important step. Open P1-URLs.py and replace the placeholder URL in the SLACK_WEBHOOK variable with your own.
+
+      
+# Find this line and replace the URL
+SLACK_WEBHOOK = "https://hooks.slack.com/services/YOUR_WEBHOOK_URL_HERE"
+
+
+
+    ⚙️ How to Use
+
+The script offers a flexible workflow depending on your needs.
+1. Standard Discovery Mode
+
+This is the default mode. You provide a list of domains, and the script will discover and test them.
+
+    Create a file (e.g., domains.txt) with your target root domains, one per line:
+
+          
+    https://example.com
+    http://dev.example-two.com
+
+
+Run the scan:
+
+      
+./P1-URLs.py -l domains.txt
+
+
+Direct URL Testing Mode
+
+Use this mode if you already have a comprehensive list of URLs and want to skip the discovery phase.
+
+    Provide your URL list to the -l flag and add the -u flag.
+
+          
+    ./P1-URLs.py -l my_url_list.txt -u
+
+
+
+
+Using Custom LFI Payloads
+
+By default, the script uses a large, built-in list of LFI payloads. To use your own, use the -p flag.
+
+      
+# Use your custom payloads in either mode
+./P1-URLs.py -l domains.txt -p /path/to/my_lfi_payloads.txt
+./P1-URLs.py -l my_url_list.txt -u -p /path/to/my_lfi_payloads.txt
 
     
 
-IGNORE_WHEN_COPYING_START
 
-        Use code with caution. Bash
-        IGNORE_WHEN_COPYING_END
+📁 Understanding the Output
 
-Detailed Workflow Explained
+All results for a scan are saved into a unique, timestamped directory (e.g., scan_results_domains_2023-10-27_15-30-00/) to keep your workspace clean.
 
-The script executes the following steps in order:
+    gf_results/: Contains text files of URLs sorted by potential vulnerability type (_lfi.txt, _sqli.txt, etc.).
 
-    Initialization: The animated banner displays, and the script checks that all necessary tools are installed.
+    nuclei_results/: Contains the raw JSON output from all Nuclei scans.
 
-    Step 1: URL Gathering (gather_urls): For each domain, it runs Katana and GAU to discover as many URLs as possible from both active crawling and historical archives.
+    lfi_vulnerable.json: A log of all confirmed LFI vulnerabilities with full details.
 
-    Step 2: Deduplication (run_uro): The massive, raw URL list is piped through Uro to remove duplicates and uninteresting files, focusing the scan on valuable endpoints.
+    blind_sqli_vulnerable.json: A log of all confirmed Blind SQLi vulnerabilities with full details.
 
-    Step 3: Classification (run_gf): GF analyzes the unique URLs and sorts them into buckets based on patterns (e.g., _lfi.txt, _sqli.txt), enabling targeted scanning.
+    nuclei_findings.json: A log of all vulnerabilities found by Nuclei.
 
-    Step 4: LFI Testing (test_lfi_dynamically):
+Your primary results will arrive as real-time alerts in your configured Slack channel.
+Credits and Inspiration
 
-        Input: The _lfi.txt list.
+This tool stands on the shoulders of giants and was inspired by the methodologies of the broader security community.
 
-        Method: A custom Python function performs Differential Analysis. It compares a normal page response to a response with an LFI payload. If the pages are significantly different and the new page contains known sensitive strings (root:x:0:0, etc.), it confirms the LFI.
+    Authors: Vivek ( https://x.com/starkcharry )
 
-        Notification: A Slack alert is sent immediately upon confirmation.
+    Core Toolchain: ProjectDiscovery (katana, nuclei), tomnomnom (gf), s0md3v (uro), and all their respective contributors.
 
-    Step 5: Blind SQLi Testing (test_blind_sqli):
+    
 
-        Input: The _sqli.txt list.
 
-        Method (Phase 1 - Parameters): For each URL parameter, it tests for SQLi using both standard injection and HTTP Parameter Pollution (HPP) for WAF evasion.
-
-        Method (Phase 2 - Headers): It then attacks the URL's headers, randomizing the order of HTTP methods and headers tested. Each request contains a single malicious header within a set of otherwise clean, legitimate headers.
-
-        Notification: A Slack alert detailing the exact injection point (parameter or header), method, DB, and payload is sent immediately upon confirmation.
-
-    Step 6: Nuclei Scanning (run_nuclei):
-
-        Input: All other lists from GF (XSS, RCE, SSRF, etc.).
-
-        Method: Nuclei runs its vast library of templates against these categorized URLs.
-
-        Notification: A detailed Slack alert is sent immediately for every valid finding.
-
-    Completion: The script finishes and reminds you to check the log files.
-
-Understanding the Results
-
-    Real-Time Slack Alerts: Your primary source of findings. You will be notified the second a vulnerability is found.
-
-    Local Log Files:
-
-        gf_results/: The categorized URL lists.
-
-        nuclei_results/: Raw JSON output from Nuclei scans.
-
-        lfi_vulnerable.json: A log of all confirmed LFI findings.
-
-        blind_sqli_vulnerable.json: A log of all confirmed Blind SQLi findings.
-
+        
+    
